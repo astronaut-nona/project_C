@@ -1,6 +1,5 @@
  // یوسف ملک محمد
  // کد دانشجویی 4036013107
-// یسلام
 
  #include <iostream>
  #include "fstream"
