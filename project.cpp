@@ -10,7 +10,7 @@
  {
    public:
     User();
-    
+
     
     
     ~User();
@@ -146,7 +146,16 @@
  {
  public:
     DepartmentManager();
-    
+      void setter (string user1 , string pass , int id , string user2){
+      username = user1;
+      password = pass;
+      userID = id;
+      name = user2;
+    }
+    int getUserID(){return userID;}
+    string getusername(){return username;}
+    string getpassword(){return password;}
+    string getname(){return name;}
 
     ~DepartmentManager();
  private:
@@ -169,18 +178,17 @@
    // getline(fin , temp);
 
 
-   User DepartmentManager[100] ;
+   DepartmentManager* managers[100] = {NULL};
 
-   DepartmentManager[0].userID = 123456;
-   DepartmentManager[0].password = "789012";
-   DepartmentManager[0].username = "345678";
-   DepartmentManager[0].name = "Ali";
+   managers[0] = new DepartmentManager();  
+   managers[0]->setter("AbbasAli" , "123456" , 987654 , "Ali" );
 
 
-   cout <<    DepartmentManager[0].userID << "\n"
-         <<   DepartmentManager[0].password << "\n"
-         <<   DepartmentManager[0].username << "\n"
-         <<   DepartmentManager[0].name << "\n";
+
+   cout <<    managers[0]->getUserID() << "\n"
+         <<"@"<<   managers[0]->getusername() << "\n"
+         <<   managers[0]->getpassword() << "\n"
+         <<   managers[0]->getname() << "\n";
 
 
    
