@@ -196,7 +196,7 @@ void showMainMenu() { // منوی اصلی
     cout << "===== Employee Management System ===== " << endl;
     cout << "|1| Login" << endl;
     cout << "|2| Exit" << endl;
-    cout << "======================================" << endl<< endl << endl << endl;
+    cout << "======================================" << endl;
 }
 
 //======================//
@@ -219,7 +219,41 @@ void handleLogin() {
 
 //======================//
 
+void showAdminMenu() {
+    cout << "===== Admin Menu ===== " << endl
+    << "|1| Add new administrator" << endl
+    << "|2| Edit Employee" << endl
+    << "|3| Calculating employee salaries" << endl
+    << "|4| Display employee list" << endl
+    << "|5| logout " << endl
+         << "======================" << endl;
+}
 
+//======================//
+
+void handleAdminMenu(DepartmentManager* manager) {
+
+    int choice;
+    cout << "Enter your choice: " ;
+    cin >> choice;
+
+    switch (choice) {
+        /*case 1:
+             منوی افزودن کارمند
+        case 2 :
+             منوی ویرایش کارمند
+        case 3
+            منوی حساب کارمند
+        case 4
+            نمایش کارمندان*/
+        case 5:
+        delete loggedInUser;
+        loggedInUser = NULL;
+        break;
+        default:
+            cout << endl << "Invalid choice !" << endl;
+    }
+}
 
  int main()
  {
