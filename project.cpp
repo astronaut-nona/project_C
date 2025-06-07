@@ -223,8 +223,26 @@ void handleLogin() {
 
  int main()
  {
+     while (true) { // منو
+         if (!loggedInUser) {
+             showMainMenu();
+             int choice;
+             cin >> choice;
+             cout << endl << endl << endl << endl;
 
-
+             switch (choice) {
+                 case 1:
+                     handleLogin();
+                 break;
+                 case 2:
+                     return 0;
+                 default:
+                     cout << "Invalid choice" << endl << endl << endl;
+             }
+         } else {
+             // منوی مدیر
+         }
+     }
 
    // ifstream fin("D:\\class\\unity\\c++2\\project\\text.txt");
    // getline(fin , temp);
