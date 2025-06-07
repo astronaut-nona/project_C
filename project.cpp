@@ -85,6 +85,11 @@
       cout << "Enter new monthly salary: ";
       cin >> monthlySalary;
    }
+
+   void getEmployeeType() {
+    cout << "Full-Time" << endl;
+}
+
     ~FullTimeEmployee();
     
  };
@@ -120,6 +125,11 @@
        cout << "Enter new hourly worked: ";
        cin >> hourlyWorked;
    }
+
+   void getEmployeeType() {
+       cout << "part-Time" << endl;
+   }
+
      //------------------------
     ~PartTimeEmployee();
 
@@ -151,6 +161,11 @@
        << "| Duration (Months): " << contractValue << endl
        << "| Department: " << department << endl;
    }
+
+   void getEmployeeType() {
+    cout << "contract-Time" << endl;
+}
+
      //------------------------
     
     ~ContractorEmployee();
