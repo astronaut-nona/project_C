@@ -8,26 +8,29 @@
  
  class User // کاربر سیستم
  {
-   public:
-    User();
-
-    
-    
-    ~User();
-   protected :
+ protected :
     string username;
     string password;
     int userID;
     string name;
+
+ public:
+     User(string uname, string pwd, int id, string name) : username(uname), password(pwd), userID(id), name(name) {}
+
+    //------------------------
+
+    bool identify(string usname, string pwd) {     // احراز هویت
+        return (username == usname && password == pwd);
+     }
+    //------------------------
+
+    string getUsername() {return username;}
+    string getPassword() {return password;}
+
+    //------------------------
+
    };
- 
- User::User()
- {
- }
- 
- User::~User()
- {
- }
+
 
  class Employee // کارمندان
  {
