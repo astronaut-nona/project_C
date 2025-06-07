@@ -91,67 +91,73 @@
 
 //======================//
 
- class PartTimeEmployee : public Employee
- {
+ class PartTimeEmployee : public Employee {     //پاره وقت
+
+     double hourlyRate;
+     int hourlyWorked;
+
  public:
-    PartTimeEmployee();
+    PartTimeEmployee(string name , int id , string dpt,  double rate ,  double hours)
+        : Employee(name, id, dpt), hourlyRate(rate), hourlyWorked(hours) {};
+     //------------------------
 
-   //  double hourlyRate(){
+   double calculateMonthlySalary() override {return hourlyRate * hourlyWorked;}
+    //------------------------
 
-   //      return ;
-   //  }
+    void displayDetails() override {
+      cout << "ID:" << EmployeeId << endl
+      << "| Name: " << name << endl
+      << "| Type : Part-Time" << endl
+      << "| Hour lyRate: " << hourlyRate << endl
+      << "| Hourly Worked: " << hourlyWorked << endl
+      << "| Department: " << department << endl;
+   }
+     //------------------------
 
-   //  int hoursWorked(){
-
-   //      return ;
-   //  }
-
+    void editDetails() override {
+      cout << "Enter new hourly rate: ";
+       cin >> hourlyRate;
+       cout << "Enter new hourly worked: ";
+       cin >> hourlyWorked;
+   }
+     //------------------------
     ~PartTimeEmployee();
- 
- private:
+
     
  };
- 
- PartTimeEmployee::PartTimeEmployee()
- {
- }
- 
- PartTimeEmployee::~PartTimeEmployee()
- {
- }
 
- class ContractorEmployee : public Employee // پیمانکاری
- {
+//======================//
+
+ class ContractorEmployee : public Employee{ // پیمانکاری
+
+     double contractValue;
+     int contractDurationMonths;
+
  public:
-    ContractorEmployee();
+    ContractorEmployee(string name , int id , string dpt, double value , int duration)
+        : Employee(name, id, dpt), contractValue(value), contractDurationMonths(duration) {};
+     //------------------------
 
-   //  double contractValue(){
+   double calculateMonthlySalary(){
 
-   //      return ;
-   //  }
+       return contractValue / contractDurationMonths;
+   }
+     //------------------------
 
-   //  int contractDurationMonths (){
-
-   //      return ;
-   //  }
+     void displayDetails() override {
+       cout << "ID:" << EmployeeId << endl
+       << "| Name: " << name << endl
+       << "| Type : Contractor" << endl
+       << "| Duration (Months): " << contractValue << endl
+       << "| Department: " << department << endl;
+   }
+     //------------------------
     
     ~ContractorEmployee();
- 
- private:
-    
+
  };
- 
- ContractorEmployee::ContractorEmployee()
- {
- }
- 
- ContractorEmployee::~ContractorEmployee()
- {
- }
 
-
-
-
+//======================//
 
  class DepartmentManager: public User  // مدیر سیستم
  {
@@ -173,13 +179,13 @@
     
  };
  
- DepartmentManager::DepartmentManager()
- {
- }
- 
- DepartmentManager::~DepartmentManager()
- {
- }
+ // DepartmentManager::DepartmentManager()
+ // {
+ // }
+ //
+ // DepartmentManager::~DepartmentManager()
+ // {
+ // }
 
 
  int main()
