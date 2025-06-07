@@ -188,8 +188,43 @@
  // }
 
 
+// menu :
+
+User *loggedInUser = NULL;
+
+void showMainMenu() { // منوی اصلی
+    cout << "===== Employee Management System ===== " << endl;
+    cout << "|1| Login" << endl;
+    cout << "|2| Exit" << endl;
+    cout << "======================================" << endl<< endl << endl << endl;
+}
+
+//======================//
+
+void handleLogin() {
+    string username,password;
+    cout << "Enter username: ";
+    cin >> username;
+    cout << "Enter password: ";
+    cin >> password;
+    cout << endl << endl << endl << endl;
+
+    if (username == "admin" || password == "1234") { // hard code admin
+        loggedInUser = new DepartmentManager("admin", "1234", 1);
+        cout << "Logged in!" << endl;
+    }else {
+        cout << "The username or password is incorrect !"  << endl;
+    }
+}
+
+//======================//
+
+
+
  int main()
  {
+
+
 
    // ifstream fin("D:\\class\\unity\\c++2\\project\\text.txt");
    // getline(fin , temp);
