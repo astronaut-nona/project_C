@@ -176,8 +176,9 @@
 
  class DepartmentManager: public User  // مدیر سیستم
  {
+
  public:
-    DepartmentManager();
+   DepartmentManager() : User("", "", 0, "") {}
       void setter (string user1 , string pass , int id , string user2){
       username = user1;
       password = pass;
@@ -194,9 +195,6 @@
     
  };
  
- // DepartmentManager::DepartmentManager()
- // {
- // }
  //
  // DepartmentManager::~DepartmentManager()
  // {
@@ -216,37 +214,40 @@ void showMainMenu() { // منوی اصلی
 
 //======================//
 
-void handleLogin() {
-    string username,password;
+void handleLogin(DepartmentManager* managers[], int managerCount) {
+    string username, password;
     cout << "Enter username: ";
     cin >> username;
     cout << "Enter password: ";
     cin >> password;
-    cout << endl << endl << endl << endl;
 
-    if (username == "admin" || password == "1234") { // hard code admin
-        loggedInUser = new DepartmentManager("admin", "1234", 1);
-        cout << "Logged in!" << endl;
-    }else {
-        cout << "The username or password is incorrect !"  << endl;
+    for (int i = 0; i < managerCount; i++) {
+        if (managers[i] != NULL && managers[i]->identify(username, password)) {
+            loggedInUser = managers[i];
+            cout << "Logged in!" << endl;
+            return;
+        }
     }
+
+    cout << "The username or password is incorrect!" << endl;
 }
+
 
 //======================//
 
 void showAdminMenu() {
     cout << "===== Admin Menu ===== " << endl
-    << "|1| Add new administrator" << endl
-    << "|2| Edit Employee" << endl
-    << "|3| Calculating employee salaries" << endl
-    << "|4| Display employee list" << endl
-    << "|5| logout " << endl
+    << "[1] Add new administrator" << endl
+    << "[2] Edit Employee" << endl
+    << "[3] Calculating employee salaries" << endl
+    << "[4] Display employee list" << endl
+    << "[5] logout " << endl
          << "======================" << endl;
 }
 
 //======================//
 
-void handleAdminMenu(DepartmentManager* manager) {
+void handleAdminMenu(DepartmentManager* ) {
 
     int choice;
     cout << "Enter your choice: " ;
@@ -272,46 +273,48 @@ void handleAdminMenu(DepartmentManager* manager) {
 
  int main()
  {
-     while (true) { // منو
-         if (!loggedInUser) {
-             showMainMenu();
-             int choice;
-             cin >> choice;
-             cout << endl << endl << endl << endl;
+    
+    // ifstream fin("D:\\class\\unity\\c++2\\project\\text.txt");
+    // getline(fin , temp);
+    
+    
+    DepartmentManager* managers[100] = {NULL};
+    int managerCount = 0;
+    
+    managers[managerCount] = new DepartmentManager();
+    managers[managerCount]->setter("AbbasAli" , "123456" , 987654 , "Ali");
+    managerCount++;
+    
+    
+    
+    cout <<    managers[0]->getUserID() << "\n"
+    <<"@"<<   managers[0]->getusername() << "\n"
+    <<   managers[0]->getpassword() << "\n"
+    <<   managers[0]->getname() << "\n";
+    
+    while (true) { // منو
+        if (!loggedInUser) {
+            showMainMenu();
+            int choice;
+            cin >> choice;
+            cout << endl << endl << endl << endl;
 
-             switch (choice) {
-                 case 1:
-                     handleLogin();
-                 break;
-                 case 2:
-                     return 0;
-                 default:
-                     cout << "Invalid choice" << endl << endl << endl;
-             }
-         } else {
-             // منوی مدیر
-         }
-     }
-
-   // ifstream fin("D:\\class\\unity\\c++2\\project\\text.txt");
-   // getline(fin , temp);
-
-
-   DepartmentManager* managers[100] = {NULL};
-
-   managers[0] = new DepartmentManager();  
-   managers[0]->setter("AbbasAli" , "123456" , 987654 , "Ali" );
-
-
-
-   cout <<    managers[0]->getUserID() << "\n"
-         <<"@"<<   managers[0]->getusername() << "\n"
-         <<   managers[0]->getpassword() << "\n"
-         <<   managers[0]->getname() << "\n";
-
-
-   
-
+            switch (choice) {
+                case 1:
+                    handleLogin(managers, managerCount);
+                break;
+                case 2:
+                    return 0;
+                default:
+                    cout << "Invalid choice" << endl << endl << endl;
+            }
+        } else {
+            // منوی مدیر
+        }
+    }
+    
+    
+    
      
      return 0;
  }
