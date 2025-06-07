@@ -5,7 +5,9 @@
  #include "fstream"
 
  using namespace std;
- 
+
+//======================//
+
  class User // کاربر سیستم
  {
  protected :
@@ -15,7 +17,7 @@
     string name;
 
  public:
-     User(string uname, string pwd, int id, string name) : username(uname), password(pwd), userID(id), name(name) {}
+     User(string uname, string pwd, int id, string name) : username(uname), password(pwd), userID(id), name(name) {};
 
     //------------------------
 
@@ -31,57 +33,63 @@
 
    };
 
+//======================//
 
  class Employee // کارمندان
  {
  public:
-    Employee();
+    Employee(string name , int id , string dpt)
+       : name(name), EmployeeId(id), department(dpt) {};
 
+    virtual double calculateMonthlySalary() = 0 ;
+    virtual void displayDetails() = 0;
     virtual void editDetails() = 0;
     virtual void getEmployeeType() = 0;
-    virtual void calculateMonthlySalary() = 0 ;
-    virtual void displayDetails() = 0;    
-    ~Employee();
+
+    ~Employee(){};
  
  protected :
     string name;
     int EmployeeId;
     string department;
  };
- 
- Employee::Employee()
- {
- }
- 
- Employee::~Employee()
- {
- }
 
+//======================//
 
+ class FullTimeEmployee : public Employee {
 
- class FullTimeEmployee : public Employee
- {
+    double monthlySalary;
+
  public:
-    FullTimeEmployee();
 
-   //  double monthlySalaryBase(){
+    FullTimeEmployee(string name , int id , string dpt , double Salary)
+        : Employee(name, id, dpt), monthlySalary(Salary) {};
 
-   //      return ;
-   //  }
-    
+     //------------------------
+
+   double calculateMonthlySalary() override {
+      return monthlySalary;
+   }
+    //------------------------
+
+    void displayDetails() override {
+      cout << "ID:" << EmployeeId << endl
+      << "Name: " << name << endl
+      << "Type : Full-Time" << endl
+      << "Salary: " <<  calculateMonthlySalary() << endl
+      << "Department: " << department << endl;
+   }
+    //------------------------
+
+    void editDetails() override {
+      cout << "Enter new monthly salary: ";
+      cin >> monthlySalary;
+   }
     ~FullTimeEmployee();
- 
- private:
     
  };
- 
- FullTimeEmployee::FullTimeEmployee()
- {
- }
- 
- FullTimeEmployee::~FullTimeEmployee()
- {
- }
+
+//======================//
 
  class PartTimeEmployee : public Employee
  {
