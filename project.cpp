@@ -247,7 +247,7 @@ void showAdminMenu() {
 
 //======================//
 
-void handleAdminMenu(DepartmentManager* ) {
+void handleAdminMenu(User* managerLog) {
 
     int choice;
     cout << "Enter your choice: " ;
@@ -263,9 +263,9 @@ void handleAdminMenu(DepartmentManager* ) {
         case 4
             نمایش کارمندان*/
         case 5:
-        delete loggedInUser;
-        loggedInUser = NULL;
-        break;
+            delete loggedInUser;
+            loggedInUser = NULL;
+            break;
         default:
             cout << endl << "Invalid choice !" << endl;
     }
@@ -310,6 +310,8 @@ void handleAdminMenu(DepartmentManager* ) {
             }
         } else {
             // منوی مدیر
+            showAdminMenu();
+            handleAdminMenu(loggedInUser);
         }
     }
     
