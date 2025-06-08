@@ -1,6 +1,3 @@
- // یوسف ملک محمد
- // کد دانشجویی 4036013107
-
  #include <iostream>
  #include "fstream"
 
@@ -179,7 +176,7 @@
 
  public:
    DepartmentManager() : User("", "", 0, "") {}
-      void setter (string user1 , string pass , int id , string user2){
+    void setter (string user1 , string pass , int id , string user2){
       username = user1;
       password = pass;
       userID = id;
@@ -196,14 +193,14 @@
  };
  
  //
- // DepartmentManager::~DepartmentManager()
- // {
- // }
+ DepartmentManager::~DepartmentManager()
+ {
+ }
 
 
 // menu :
 
-User *loggedInUser = NULL;
+DepartmentManager* loggedInUser = NULL;
 
 void showMainMenu() { // منوی اصلی
     cout << "===== Employee Management System ===== " << endl;
@@ -235,8 +232,8 @@ void handleLogin(DepartmentManager* managers[], int managerCount) {
 
 //======================//
 
-void showAdminMenu() {
-    cout << "===== Admin Menu ===== " << endl
+void showAdminMenu(string nameAdmin) {
+    cout << "===== Admin "<< nameAdmin << " Menu =====" << endl
     << "[1] Add new administrator" << endl
     << "[2] Edit Employee" << endl
     << "[3] Calculating employee salaries" << endl
@@ -247,21 +244,21 @@ void showAdminMenu() {
 
 //======================//
 
-void handleAdminMenu(User* managerLog) {
+void handleAdminMenu(DepartmentManager* managerLog) {
 
     int choice;
     cout << "Enter your choice: " ;
     cin >> choice;
 
     switch (choice) {
-        /*case 1:
-             منوی افزودن کارمند
-        case 2 :
-             منوی ویرایش کارمند
-        case 3
-            منوی حساب کارمند
-        case 4
-            نمایش کارمندان*/
+        // case 1:
+
+        // case 2 :
+            //  منوی ویرایش کارمند
+        // case 3
+            // منوی حساب کارمند
+        // case 4
+            // نمایش کارمندان
         case 5:
             delete loggedInUser;
             loggedInUser = NULL;
@@ -310,7 +307,7 @@ void handleAdminMenu(User* managerLog) {
             }
         } else {
             // منوی مدیر
-            showAdminMenu();
+            showAdminMenu(loggedInUser->getname());
             handleAdminMenu(loggedInUser);
         }
     }
