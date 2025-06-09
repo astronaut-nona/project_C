@@ -43,6 +43,10 @@
     virtual void editDetails() = 0;
     virtual void getEmployeeType() = 0;
 
+    string getName() { return name; }
+    string getDepartment() { return department; }
+    int getID() { return EmployeeId; }
+    
     ~Employee(){};
  
  protected :
@@ -251,8 +255,8 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
     cin >> choice;
 
     switch (choice) {
+        // افزودن کارمند جدید
         case 1: {
-            // افزودن کارمند جدید
 
             int empType;
             cout << "Select employee type: \n";
@@ -308,8 +312,43 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
             break;
         }
 
-        // case 2 :
-            //  منوی ویرایش کارمند
+        case 2: {
+            string name, department;
+            int id;
+
+            cin.ignore(); // پاک کردن \n قبلی
+            cout << "Enter name: ";
+            getline(cin, name);
+
+            cout << "Enter department: ";
+            getline(cin, department);
+
+            cout << "Enter ID: ";
+            cin >> id;
+
+            bool found = false;
+
+            for (int i = 0; emp[i] != NULL; i++) {
+                // فرض بر اینه که این مقادیر در کلاس به صورت get تعریف شدن
+                // وگرنه باید داخل کلاس public باشن یا از متد استفاده کنی
+                if (
+                    emp[i]->getName() == name &&
+                    emp[i]->getDepartment() == department &&
+                    emp[i]->getID() == id
+                ) {
+                    emp[i]->editDetails(); // ✅ فقط اینو صدا بزن
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                cout << "Employee not found!" << endl;
+            }
+
+            break;
+        }
+
         // case 3
             // منوی حساب کارمند
         // case 4
