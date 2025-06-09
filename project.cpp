@@ -41,7 +41,7 @@
     virtual double calculateMonthlySalary() = 0 ;
     virtual void displayDetails() = 0;
     virtual void editDetails() = 0;
-    virtual void getEmployeeType() = 0;
+    virtual string  getEmployeeType() = 0;
 
     string getName() { return name; }
     string getDepartment() { return department; }
@@ -87,9 +87,10 @@ private:
       cin >> monthlySalary;
    }
 
-   void getEmployeeType() {
-    cout << "Full-Time" << endl;
-}
+    string getEmployeeType() override {
+        return "Full-Time";
+    }
+
 
     ~FullTimeEmployee();
     
@@ -128,9 +129,10 @@ private:
        cin >> hourlyWorked;
    }
 
-   void getEmployeeType() {
-       cout << "part-Time" << endl;
-   }
+    string getEmployeeType() override {
+        return "Part-Time";
+    }
+
 
      //------------------------
     ~PartTimeEmployee();
@@ -162,9 +164,10 @@ public:
              << "| Department: " << department << endl;
     }
 
-    void getEmployeeType() override {
-        cout << "Contractor" << endl;
+    string getEmployeeType() override {
+        return "Contractor";
     }
+
 
     void editDetails() override {
         cout << "Enter new contract value: ";
@@ -312,11 +315,12 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
             break;
         }
 
+        // ادیت اطلاعات کارمند
         case 2: {
             string name, department;
             int id;
 
-            cin.ignore(); // پاک کردن \n قبلی
+            cin.ignore(); 
             cout << "Enter name: ";
             getline(cin, name);
 
@@ -329,14 +333,12 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
             bool found = false;
 
             for (int i = 0; emp[i] != NULL; i++) {
-                // فرض بر اینه که این مقادیر در کلاس به صورت get تعریف شدن
-                // وگرنه باید داخل کلاس public باشن یا از متد استفاده کنی
                 if (
                     emp[i]->getName() == name &&
                     emp[i]->getDepartment() == department &&
                     emp[i]->getID() == id
                 ) {
-                    emp[i]->editDetails(); // ✅ فقط اینو صدا بزن
+                    emp[i]->editDetails(); 
                     found = true;
                     break;
                 }
@@ -349,8 +351,67 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
             break;
         }
 
-        // case 3
-            // منوی حساب کارمند
+        // منوی حساب کارمند
+        case 3:{
+
+            cout << "----- Select Employee to View Salary -----" << endl;
+
+            int empType , index = 0;
+            cout << "Select employee type: \n";
+            cout << "[1] Full-Time\n[2] Part-Time\n[3] Contractor\n";
+            cin >> empType;
+
+            if (empType == 1) {
+
+                    for (int i = 0; emp[i] != NULL; i++) {
+                        cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
+                        index++;
+                    }
+
+                    if (index == 0) {
+                        cout << "No employees found." << endl;
+                        break;
+                    }
+                }
+                else if (empType == 2) {
+                        cout << "----- Part-Time Employees -----" << endl;
+                        for (int i = 0; emp[i] != NULL; i++) {
+                            cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
+                            index++;
+                        }
+
+                        if (index == 0) {
+                            cout << "No employees found." << endl;
+                            break;
+                        }
+                    }
+                    else if (empType == 3) {
+                        for (int i = 0; emp[i] != NULL; i++) {
+                            cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
+                            index++;
+                        }
+
+                        if (index == 0) {
+                            cout << "No employees found." << endl;
+                            break;
+                        }
+                    }
+
+            int choice;
+            cout << "Enter employee number: ";
+            cin >> choice;
+
+            if (choice > 0 && choice <= index) {
+                int i = choice - 1;
+                cout << "Employee: " << emp[i]->getName() << endl;
+                cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << endl;
+            } else {
+                cout << "Invalid selection." << endl;
+            }
+            
+
+            break;
+        }
         // case 4
             // نمایش کارمندان
 
