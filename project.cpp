@@ -43,6 +43,10 @@
     virtual void editDetails() = 0;
     virtual void getEmployeeType() = 0;
 
+    string getName() { return name; }
+    string getDepartment() { return department; }
+    int getID() { return EmployeeId; }
+    
     ~Employee(){};
  
  protected :
@@ -54,7 +58,7 @@
 //======================//
 
  class FullTimeEmployee : public Employee {
-
+private:
     double monthlySalary;
 
  public:
@@ -94,6 +98,7 @@
 //======================//
 
  class PartTimeEmployee : public Employee {     //پاره وقت
+private:
 
      double hourlyRate;
      int hourlyWorked;
@@ -134,40 +139,41 @@
  };
 
 //======================//
+class ContractorEmployee : public Employee {
+private:
 
- class ContractorEmployee : public Employee{ // پیمانکاری
+    double contractValue;
+    int contractDurationMonths;
 
-     double contractValue;
-     int contractDurationMonths;
-
- public:
+public:
     ContractorEmployee(string name , int id , string dpt, double value , int duration)
-        : Employee(name, id, dpt), contractValue(value), contractDurationMonths(duration) {};
-     //------------------------
+        : Employee(name, id, dpt), contractValue(value), contractDurationMonths(duration) {}
 
-   double calculateMonthlySalary(){
+    double calculateMonthlySalary() override {
+        return contractValue / contractDurationMonths;
+    }
 
-       return contractValue / contractDurationMonths;
-   }
-     //------------------------
+    void displayDetails() override {
+        cout << "ID:" << EmployeeId << endl
+             << "| Name: " << name << endl
+             << "| Type : Contractor" << endl
+             << "| Contract Value: " << contractValue << endl
+             << "| Duration (Months): " << contractDurationMonths << endl
+             << "| Department: " << department << endl;
+    }
 
-     void displayDetails() override {
-       cout << "ID:" << EmployeeId << endl
-       << "| Name: " << name << endl
-       << "| Type : Contractor" << endl
-       << "| Duration (Months): " << contractValue << endl
-       << "| Department: " << department << endl;
-   }
+    void getEmployeeType() override {
+        cout << "Contractor" << endl;
+    }
 
-   void getEmployeeType() {
-    cout << "contract-Time" << endl;
-}
+    void editDetails() override {
+        cout << "Enter new contract value: ";
+        cin >> contractValue;
+        cout << "Enter new duration (months): ";
+        cin >> contractDurationMonths;
+    }
+};
 
-     //------------------------
-    
-    ~ContractorEmployee();
-
- };
 
 //======================//
 
@@ -243,30 +249,122 @@ void showAdminMenu(string nameAdmin) {
 }
 
 //======================//
-
-void handleAdminMenu(DepartmentManager* managerLog) {
-
+void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
     int choice;
-    cout << "Enter your choice: " ;
+    cout << "Enter your choice: ";
     cin >> choice;
 
     switch (choice) {
-        // case 1:
+        // افزودن کارمند جدید
+        case 1: {
 
-        // case 2 :
-            //  منوی ویرایش کارمند
+            int empType;
+            cout << "Select employee type: \n";
+            cout << "[1] Full-Time\n[2] Part-Time\n[3] Contractor\n";
+            cin >> empType;
+
+            string name, department;
+            int id;
+
+            cout << "Enter name: ";
+            cin.ignore(); 
+            getline(cin, name);
+
+            cout << "Enter department: ";
+            getline(cin, department);
+
+            cout << "Enter ID: ";
+            cin >> id;
+
+            for (int i = 0; i < 100; i++) {
+                if (emp[i] == NULL) {
+                    if (empType == 1) {
+                        double salary;
+                        cout << "Enter monthly salary: ";
+                        cin >> salary;
+                        emp[i] = new FullTimeEmployee(name, id, department, salary);
+                    }
+                    else if (empType == 2) {
+                        double rate;
+                        int hours;
+                        cout << "Enter hourly rate: ";
+                        cin >> rate;
+                        cout << "Enter hours worked: ";
+                        cin >> hours;
+
+                        emp[i] = new PartTimeEmployee(name, id, department, rate, hours);
+                    }
+                    else if (empType == 3) {
+                        double value;
+                        int months;
+                        cout << "Enter contract value: ";
+                        cin >> value;
+                        cout << "Enter contract duration (months): ";
+                        cin >> months;
+
+                        emp[i] = new ContractorEmployee(name, id, department, value, months);
+                    }
+                    cout << "Employee added successfully!" << endl;
+                    break;
+                }
+            }
+
+            break;
+        }
+
+        case 2: {
+            string name, department;
+            int id;
+
+            cin.ignore(); // پاک کردن \n قبلی
+            cout << "Enter name: ";
+            getline(cin, name);
+
+            cout << "Enter department: ";
+            getline(cin, department);
+
+            cout << "Enter ID: ";
+            cin >> id;
+
+            bool found = false;
+
+            for (int i = 0; emp[i] != NULL; i++) {
+                // فرض بر اینه که این مقادیر در کلاس به صورت get تعریف شدن
+                // وگرنه باید داخل کلاس public باشن یا از متد استفاده کنی
+                if (
+                    emp[i]->getName() == name &&
+                    emp[i]->getDepartment() == department &&
+                    emp[i]->getID() == id
+                ) {
+                    emp[i]->editDetails(); // ✅ فقط اینو صدا بزن
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                cout << "Employee not found!" << endl;
+            }
+
+            break;
+        }
+
         // case 3
             // منوی حساب کارمند
         // case 4
             // نمایش کارمندان
+
         case 5:
             delete loggedInUser;
             loggedInUser = NULL;
             break;
+
         default:
-            cout << endl << "Invalid choice !" << endl;
+            cout << endl << "Invalid choice!" << endl;
     }
 }
+
+
 
  int main()
  {
@@ -276,6 +374,8 @@ void handleAdminMenu(DepartmentManager* managerLog) {
     
     
     DepartmentManager* managers[100] = {NULL};
+    Employee *employers[100] = {NULL};
+
     int managerCount = 0;
     
     managers[managerCount] = new DepartmentManager();
@@ -308,7 +408,7 @@ void handleAdminMenu(DepartmentManager* managerLog) {
         } else {
             // منوی مدیر
             showAdminMenu(loggedInUser->getname());
-            handleAdminMenu(loggedInUser);
+            handleAdminMenu(loggedInUser , employers);
         }
     }
     
