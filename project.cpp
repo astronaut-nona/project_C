@@ -1,5 +1,8 @@
  #include <iostream>
+ #include <iomanip> 
  #include "fstream"
+
+
 
  using namespace std;
 
@@ -74,11 +77,11 @@ private:
     //------------------------
 
     void displayDetails() override {
-      cout << "ID:" << EmployeeId << endl
-      << "Name: " << name << endl
-      << "Type : Full-Time" << endl
-      << "Salary: " <<  calculateMonthlySalary() << endl
-      << "Department: " << department << endl;
+         cout << "\033[36mID:\033[0m " << EmployeeId << endl
+             << "\033[36mName:\033[0m " << name << endl
+             << "\033[36mType:\033[0m Full-Time" << endl
+             << "\033[36mSalary:\033[0m $" << monthlySalary << endl
+             << "\033[36mDepartment:\033[0m " << department << endl;
    }
     //------------------------
 
@@ -113,12 +116,12 @@ private:
     //------------------------
 
     void displayDetails() override {
-      cout << "ID:" << EmployeeId << endl
-      << "| Name: " << name << endl
-      << "| Type : Part-Time" << endl
-      << "| Hour lyRate: " << hourlyRate << endl
-      << "| Hourly Worked: " << hourlyWorked << endl
-      << "| Department: " << department << endl;
+        cout << "\033[36mID:\033[0m " << EmployeeId << endl
+             << "\033[36mName:\033[0m " << name << endl
+             << "\033[36mType:\033[0m Part-Time" << endl
+             << "\033[36mHourly Rate:\033[0m $" << hourlyRate << endl
+             << "\033[36mHours Worked:\033[0m " << hourlyWorked << endl
+             << "\033[36mDepartment:\033[0m " << department << endl;
    }
      //------------------------
 
@@ -156,12 +159,12 @@ public:
     }
 
     void displayDetails() override {
-        cout << "ID:" << EmployeeId << endl
-             << "| Name: " << name << endl
-             << "| Type : Contractor" << endl
-             << "| Contract Value: " << contractValue << endl
-             << "| Duration (Months): " << contractDurationMonths << endl
-             << "| Department: " << department << endl;
+        cout << "\033[36mID:\033[0m " << EmployeeId << endl
+             << "\033[36mName:\033[0m " << name << endl
+             << "\033[36mType:\033[0m Contractor" << endl
+             << "\033[36mContract Value:\033[0m $" << contractValue << endl
+             << "\033[36mDuration (Months):\033[0m " << contractDurationMonths << endl
+             << "\033[36mDepartment:\033[0m " << department << endl;
     }
 
     string getEmployeeType() override {
@@ -242,8 +245,11 @@ void handleLogin(DepartmentManager* managers[], int managerCount) {
 //======================//
 
 void showAdminMenu(string nameAdmin) {
-    cout << "===== Admin "<< nameAdmin << " Menu =====" << endl
-    << "[1] Add new Employee" << endl
+    cout << "\033[1;36m\n==========================\n";
+    cout << " Admin "<< nameAdmin<<  " Control Panel\n";
+    cout << "==========================\033[0m\n";
+
+    cout << "[1] Add new Employee" << endl
     << "[2] Edit Employee" << endl
     << "[3] Calculating employee salaries" << endl
     << "[4] Display employee list" << endl
@@ -308,7 +314,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
                         emp[i] = new ContractorEmployee(name, id, department, value, months);
                     }
-                    cout << "Employee added successfully!" << endl;
+                    cout << "\033[32m✔ Employee added successfully!\033[0m\n";
                     break;
                 }
             }
@@ -347,7 +353,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             }
 
             if (!found) {
-                cout << "Employee not found!" << endl;
+                cout << "\033[31m✘ Employee not found!\033[0m\n";
             }
 
             break;
@@ -387,7 +393,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                 }
 
                 if (!found) {
-                    cout << "Employee not found!" << endl;
+                    cout << "\033[31m✘ Employee not found!\033[0m\n";
                 }
 
             }else if (sure == 1)
@@ -463,18 +469,27 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             }
         }
         // نمایش کارمندان
-        case 4:{
-        int index =0 ;
+        case 4: {
+            int index = 0;
+            cout << "\n\033[1;36m==== Employee List ====\033[0m\n"; // Cyan bold title
+
             for (int i = 0; emp[i] != NULL; i++) {
-                cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
+                cout << "\033[1;33m[" << index + 1 << "]\033[0m " // Yellow index
+                    << "\033[1;37mName:\033[0m " << emp[i]->getName() << " | "
+                    << "\033[1;37mDepartment:\033[0m " << emp[i]->getDepartment() << " | "
+                    << "\033[1;37mType:\033[0m " << emp[i]->getEmployeeType() << "\n";
                 index++;
             }
+
             if (index == 0) {
-                cout << "No employees found." << endl;
-                break;
+                cout << "\033[1;31mNo employees found!\033[0m\n"; // Red warning
+            } else {
+                cout << "\033[1;32mTotal Employees:\033[0m " << index << "\n\n"; // Green total
             }
-        break;
+
+            break;
         }
+
 
         // افزودن مدیر جدید
         case 5: {
@@ -509,7 +524,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             managers[managerCount] = new DepartmentManager();
             managers[managerCount]->setter(newUsername, newPassword, newID, newName);
             managerCount++;
-            cout << "New manager added successfully!" << endl;
+            cout << "\033[32m✔ Employee added successfully!\033[0m\n";
         }
 
 
@@ -530,10 +545,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
  int main()
  {
-    
-    // ifstream fin("D:\\class\\unity\\c++2\\project\\text.txt");
-    // getline(fin , temp);
-    
+    cout << "\033[1;34mWelcome to the Employee Management System!\033[0m\n";
     
     DepartmentManager* managers[100] = {NULL};
     Employee *employers[100] = {NULL};
