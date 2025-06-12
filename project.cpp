@@ -243,7 +243,7 @@ void handleLogin(DepartmentManager* managers[], int managerCount) {
 
 void showAdminMenu(string nameAdmin) {
     cout << "===== Admin "<< nameAdmin << " Menu =====" << endl
-    << "[1] Add new administrator" << endl
+    << "[1] Add new Employee" << endl
     << "[2] Edit Employee" << endl
     << "[3] Calculating employee salaries" << endl
     << "[4] Display employee list" << endl
@@ -338,6 +338,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
                     emp[i]->getDepartment() == department &&
                     emp[i]->getID() == id
                 ) {
+                    cout << "\n\nI Found your employee!!\n";
                     emp[i]->editDetails(); 
                     found = true;
                     break;
@@ -353,67 +354,127 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
 
         // منوی حساب کارمند
         case 3:{
+            int sure=0,empType;
+            int filteredIndexes[100] , filteredCount = 0;
 
-            cout << "----- Select Employee to View Salary -----" << endl;
+            cout << "if you show list or search on list ??"<< endl;
+            cout << "[1]show list\n[2]search" << endl;
+            
+            cin >> sure;
+            
+            if (sure == 2)
+            {
+                string name ,type;
+                int id;
 
-            int empType , index = 0;
-            cout << "Select employee type: \n";
-            cout << "[1] Full-Time\n[2] Part-Time\n[3] Contractor\n";
-            cin >> empType;
+                cin.ignore();
+                cout << "Enter employee name: ";
+                getline(cin, name);
 
-            if (empType == 1) {
+                cout << "Enter employee ID: ";
+                cin >> id;
 
-                    for (int i = 0; emp[i] != NULL; i++) {
-                        cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
-                        index++;
+                bool found = false;
+
+                for (int i = 0; emp[i] != NULL; i++) {
+                    if (emp[i]->getName() == name && emp[i]->getID() == id) {
+                        cout << "Employee: " << emp[i]->getName() << endl;
+                        cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << endl;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    cout << "Employee not found!" << endl;
+                }
+
+            }else if (sure == 1)
+            {
+                
+                
+                
+                cout << "----- Select Employee to View Salary -----" << endl;
+                
+                cout << "Select employee type: \n";
+                cout << "[1] Full-Time\n[2] Part-Time\n[3] Contractor\n";
+                cin >> empType;
+                
+                if (empType == 1) {
+                    cout << "----- Full-Time Employees -----" << endl;
+                for (int i = 0; emp[i] != NULL; i++) {
+                    if (emp[i]->getEmployeeType() == "Full-Time") {
+                        cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
+                        filteredIndexes[filteredCount] = i; // ذخیره ایندکس اصلی
+                        filteredCount++;
+                    }
+                }
+
+                if (filteredCount == 0) {
+                    cout << "No employees found." << endl;
+                    break;
+                }
+            }
+            else if (empType == 2) {
+                cout << "----- Part-Time Employees -----" << endl;
+                for (int i = 0; emp[i] != NULL; i++) {
+                    if (emp[i]->getEmployeeType() == "Part-Time") {
+                        cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
+                        filteredIndexes[filteredCount] = i; // ذخیره ایندکس اصلی
+                        filteredCount++;
                     }
 
-                    if (index == 0) {
+                    if (filteredCount == 0) {
+                        cout << "No employees found." << endl;
+                        break;
+                    }
+                }}
+                else if (empType == 3) {
+                    cout << "----- Contractor Employees -----" << endl;
+                    for (int i = 0; emp[i] != NULL; i++) {
+                        if (emp[i]->getEmployeeType() == "Contractor") {
+                            cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
+                            filteredIndexes[filteredCount] = i; // ذخیره ایندکس اصلی
+                            filteredCount++;
+                        }
+                    }
+                    if (filteredCount == 0) {
                         cout << "No employees found." << endl;
                         break;
                     }
                 }
-                else if (empType == 2) {
-                        cout << "----- Part-Time Employees -----" << endl;
-                        for (int i = 0; emp[i] != NULL; i++) {
-                            cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
-                            index++;
-                        }
+                
+                int choice;
+                cout << "Enter employee number: ";
+                cin >> choice;
 
-                        if (index == 0) {
-                            cout << "No employees found." << endl;
-                            break;
-                        }
-                    }
-                    else if (empType == 3) {
-                        for (int i = 0; emp[i] != NULL; i++) {
-                            cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
-                            index++;
-                        }
+                if (choice > 0 && choice <= filteredCount) {
+                    int realIndex = filteredIndexes[choice - 1];
+                    cout << "Employee: " << emp[realIndex]->getName() << endl;
+                    cout << "Monthly Salary: " << emp[realIndex]->calculateMonthlySalary() << " $" << endl;
+                } else {
+                    cout << "Invalid selection." << endl;
+                }
 
-                        if (index == 0) {
-                            cout << "No employees found." << endl;
-                            break;
-                        }
-                    }
-
-            int choice;
-            cout << "Enter employee number: ";
-            cin >> choice;
-
-            if (choice > 0 && choice <= index) {
-                int i = choice - 1;
-                cout << "Employee: " << emp[i]->getName() << endl;
-                cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << endl;
-            } else {
-                cout << "Invalid selection." << endl;
+                
+                
+                break;
             }
-            
-
-            break;
         }
-        // case 4
-            // نمایش کارمندان
+        // نمایش کارمندان
+        case 4:{
+        int index =0 ;
+            for (int i = 0; emp[i] != NULL; i++) {
+                cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
+                index++;
+            }
+            if (index == 0) {
+                cout << "No employees found." << endl;
+                break;
+            }
+        break;
+        }
+
 
         case 5:
             delete loggedInUser;
