@@ -247,12 +247,13 @@ void showAdminMenu(string nameAdmin) {
     << "[2] Edit Employee" << endl
     << "[3] Calculating employee salaries" << endl
     << "[4] Display employee list" << endl
-    << "[5] logout " << endl
+    << "[5] Add new Administrator" << endl
+    << "[6] logout " << endl
          << "======================" << endl;
 }
 
 //======================//
-void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
+void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , DepartmentManager* managers[],int& managerCount) {
     int choice;
     cout << "Enter your choice: ";
     cin >> choice;
@@ -405,7 +406,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
                 for (int i = 0; emp[i] != NULL; i++) {
                     if (emp[i]->getEmployeeType() == "Full-Time") {
                         cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
-                        filteredIndexes[filteredCount] = i; // ذخیره ایندکس اصلی
+                        filteredIndexes[filteredCount] = i; 
                         filteredCount++;
                     }
                 }
@@ -420,7 +421,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
                 for (int i = 0; emp[i] != NULL; i++) {
                     if (emp[i]->getEmployeeType() == "Part-Time") {
                         cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
-                        filteredIndexes[filteredCount] = i; // ذخیره ایندکس اصلی
+                        filteredIndexes[filteredCount] = i;
                         filteredCount++;
                     }
 
@@ -434,7 +435,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
                     for (int i = 0; emp[i] != NULL; i++) {
                         if (emp[i]->getEmployeeType() == "Contractor") {
                             cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
-                            filteredIndexes[filteredCount] = i; // ذخیره ایندکس اصلی
+                            filteredIndexes[filteredCount] = i; 
                             filteredCount++;
                         }
                     }
@@ -475,8 +476,47 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
         break;
         }
 
+        // افزودن مدیر جدید
+        case 5: {
+            string newUsername, newPassword, newName;
+            int newID;
 
-        case 5:
+            cin.ignore();
+
+            cout << "Enter new manager's username: ";
+            getline(cin, newUsername);
+
+            cout << "Enter new manager's password: ";
+            getline(cin, newPassword);
+
+            cout << "Enter new manager's name: ";
+            getline(cin, newName);
+
+            cout << "Enter new manager's ID: ";
+            cin >> newID;
+
+        bool duplicate = false;
+        for (int i = 0; i < managerCount; i++) {
+            if (managers[i]->getusername() == newUsername) {
+                duplicate = true;
+                break;
+            }
+        }
+
+        if (duplicate) {
+            cout << "Username already exists!" << endl;
+        } else {
+            managers[managerCount] = new DepartmentManager();
+            managers[managerCount]->setter(newUsername, newPassword, newID, newName);
+            managerCount++;
+            cout << "New manager added successfully!" << endl;
+        }
+
+
+            break;
+        }
+
+        case 6:
             delete loggedInUser;
             loggedInUser = NULL;
             break;
@@ -516,7 +556,6 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
             showMainMenu();
             int choice;
             cin >> choice;
-            cout << endl << endl << endl << endl;
 
             switch (choice) {
                 case 1:
@@ -525,12 +564,12 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
                 case 2:
                     return 0;
                 default:
-                    cout << "Invalid choice" << endl << endl << endl;
+                    cout << "Invalid choice" << endl;
             }
         } else {
             // منوی مدیر
             showAdminMenu(loggedInUser->getname());
-            handleAdminMenu(loggedInUser , employers);
+            handleAdminMenu(loggedInUser , employers , managers ,managerCount );
         }
     }
     
