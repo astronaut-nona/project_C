@@ -1,5 +1,8 @@
  #include <iostream>
+ #include <iomanip> 
  #include "fstream"
+
+
 
  using namespace std;
 
@@ -74,11 +77,11 @@ private:
     //------------------------
 
     void displayDetails() override {
-      cout << "ID:" << EmployeeId << endl
-      << "Name: " << name << endl
-      << "Type : Full-Time" << endl
-      << "Salary: " <<  calculateMonthlySalary() << endl
-      << "Department: " << department << endl;
+         cout << "\033[36mID:\033[0m " << EmployeeId << endl
+             << "\033[36mName:\033[0m " << name << endl
+             << "\033[36mType:\033[0m Full-Time" << endl
+             << "\033[36mSalary:\033[0m $" << monthlySalary << endl
+             << "\033[36mDepartment:\033[0m " << department << endl;
    }
     //------------------------
 
@@ -113,12 +116,12 @@ private:
     //------------------------
 
     void displayDetails() override {
-      cout << "ID:" << EmployeeId << endl
-      << "| Name: " << name << endl
-      << "| Type : Part-Time" << endl
-      << "| Hour lyRate: " << hourlyRate << endl
-      << "| Hourly Worked: " << hourlyWorked << endl
-      << "| Department: " << department << endl;
+        cout << "\033[36mID:\033[0m " << EmployeeId << endl
+             << "\033[36mName:\033[0m " << name << endl
+             << "\033[36mType:\033[0m Part-Time" << endl
+             << "\033[36mHourly Rate:\033[0m $" << hourlyRate << endl
+             << "\033[36mHours Worked:\033[0m " << hourlyWorked << endl
+             << "\033[36mDepartment:\033[0m " << department << endl;
    }
      //------------------------
 
@@ -156,12 +159,12 @@ public:
     }
 
     void displayDetails() override {
-        cout << "ID:" << EmployeeId << endl
-             << "| Name: " << name << endl
-             << "| Type : Contractor" << endl
-             << "| Contract Value: " << contractValue << endl
-             << "| Duration (Months): " << contractDurationMonths << endl
-             << "| Department: " << department << endl;
+        cout << "\033[36mID:\033[0m " << EmployeeId << endl
+             << "\033[36mName:\033[0m " << name << endl
+             << "\033[36mType:\033[0m Contractor" << endl
+             << "\033[36mContract Value:\033[0m $" << contractValue << endl
+             << "\033[36mDuration (Months):\033[0m " << contractDurationMonths << endl
+             << "\033[36mDepartment:\033[0m " << department << endl;
     }
 
     string getEmployeeType() override {
@@ -242,17 +245,21 @@ void handleLogin(DepartmentManager* managers[], int managerCount) {
 //======================//
 
 void showAdminMenu(string nameAdmin) {
-    cout << "===== Admin "<< nameAdmin << " Menu =====" << endl
-    << "[1] Add new administrator" << endl
+    cout << "\033[1;36m\n==========================\n";
+    cout << " Admin "<< nameAdmin<<  " Control Panel\n";
+    cout << "==========================\033[0m\n";
+
+    cout << "[1] Add new Employee" << endl
     << "[2] Edit Employee" << endl
     << "[3] Calculating employee salaries" << endl
     << "[4] Display employee list" << endl
-    << "[5] logout " << endl
+    << "[5] Add new Administrator" << endl
+    << "[6] logout " << endl
          << "======================" << endl;
 }
 
 //======================//
-void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
+void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , DepartmentManager* managers[],int& managerCount) {
     int choice;
     cout << "Enter your choice: ";
     cin >> choice;
@@ -307,7 +314,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
 
                         emp[i] = new ContractorEmployee(name, id, department, value, months);
                     }
-                    cout << "Employee added successfully!" << endl;
+                    cout << "\033[32m✔ Employee added successfully!\033[0m\n";
                     break;
                 }
             }
@@ -338,6 +345,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
                     emp[i]->getDepartment() == department &&
                     emp[i]->getID() == id
                 ) {
+                    cout << "\n\nI Found your employee!!\n";
                     emp[i]->editDetails(); 
                     found = true;
                     break;
@@ -345,7 +353,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
             }
 
             if (!found) {
-                cout << "Employee not found!" << endl;
+                cout << "\033[31m✘ Employee not found!\033[0m\n";
             }
 
             break;
@@ -353,69 +361,177 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
 
         // منوی حساب کارمند
         case 3:{
+            int sure=0,empType;
+            int filteredIndexes[100] , filteredCount = 0;
 
-            cout << "----- Select Employee to View Salary -----" << endl;
+            cout << "if you show list or search on list ??"<< endl;
+            cout << "[1]show list\n[2]search" << endl;
+            
+            cin >> sure;
+            
+            if (sure == 2)
+            {
+                string name ,type;
+                int id;
 
-            int empType , index = 0;
-            cout << "Select employee type: \n";
-            cout << "[1] Full-Time\n[2] Part-Time\n[3] Contractor\n";
-            cin >> empType;
+                cin.ignore();
+                cout << "Enter employee name: ";
+                getline(cin, name);
 
-            if (empType == 1) {
+                cout << "Enter employee ID: ";
+                cin >> id;
 
-                    for (int i = 0; emp[i] != NULL; i++) {
-                        cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
-                        index++;
+                bool found = false;
+
+                for (int i = 0; emp[i] != NULL; i++) {
+                    if (emp[i]->getName() == name && emp[i]->getID() == id) {
+                        cout << "Employee: " << emp[i]->getName() << endl;
+                        cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << endl;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    cout << "\033[31m✘ Employee not found!\033[0m\n";
+                }
+
+            }else if (sure == 1)
+            {
+                
+                
+                
+                cout << "----- Select Employee to View Salary -----" << endl;
+                
+                cout << "Select employee type: \n";
+                cout << "[1] Full-Time\n[2] Part-Time\n[3] Contractor\n";
+                cin >> empType;
+                
+                if (empType == 1) {
+                    cout << "----- Full-Time Employees -----" << endl;
+                for (int i = 0; emp[i] != NULL; i++) {
+                    if (emp[i]->getEmployeeType() == "Full-Time") {
+                        cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
+                        filteredIndexes[filteredCount] = i; 
+                        filteredCount++;
+                    }
+                }
+
+                if (filteredCount == 0) {
+                    cout << "No employees found." << endl;
+                    break;
+                }
+            }
+            else if (empType == 2) {
+                cout << "----- Part-Time Employees -----" << endl;
+                for (int i = 0; emp[i] != NULL; i++) {
+                    if (emp[i]->getEmployeeType() == "Part-Time") {
+                        cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
+                        filteredIndexes[filteredCount] = i;
+                        filteredCount++;
                     }
 
-                    if (index == 0) {
+                    if (filteredCount == 0) {
+                        cout << "No employees found." << endl;
+                        break;
+                    }
+                }}
+                else if (empType == 3) {
+                    cout << "----- Contractor Employees -----" << endl;
+                    for (int i = 0; emp[i] != NULL; i++) {
+                        if (emp[i]->getEmployeeType() == "Contractor") {
+                            cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
+                            filteredIndexes[filteredCount] = i; 
+                            filteredCount++;
+                        }
+                    }
+                    if (filteredCount == 0) {
                         cout << "No employees found." << endl;
                         break;
                     }
                 }
-                else if (empType == 2) {
-                        cout << "----- Part-Time Employees -----" << endl;
-                        for (int i = 0; emp[i] != NULL; i++) {
-                            cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
-                            index++;
-                        }
+                
+                int choice;
+                cout << "Enter employee number: ";
+                cin >> choice;
 
-                        if (index == 0) {
-                            cout << "No employees found." << endl;
-                            break;
-                        }
-                    }
-                    else if (empType == 3) {
-                        for (int i = 0; emp[i] != NULL; i++) {
-                            cout << "[" << index + 1 << "] " << emp[i]->getName() << endl;
-                            index++;
-                        }
+                if (choice > 0 && choice <= filteredCount) {
+                    int realIndex = filteredIndexes[choice - 1];
+                    cout << "Employee: " << emp[realIndex]->getName() << endl;
+                    cout << "Monthly Salary: " << emp[realIndex]->calculateMonthlySalary() << " $" << endl;
+                } else {
+                    cout << "Invalid selection." << endl;
+                }
 
-                        if (index == 0) {
-                            cout << "No employees found." << endl;
-                            break;
-                        }
-                    }
-
-            int choice;
-            cout << "Enter employee number: ";
-            cin >> choice;
-
-            if (choice > 0 && choice <= index) {
-                int i = choice - 1;
-                cout << "Employee: " << emp[i]->getName() << endl;
-                cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << endl;
-            } else {
-                cout << "Invalid selection." << endl;
+                
+                
+                break;
             }
-            
+        }
+        // نمایش کارمندان
+        case 4: {
+            int index = 0;
+            cout << "\n\033[1;36m==== Employee List ====\033[0m\n"; // Cyan bold title
+
+            for (int i = 0; emp[i] != NULL; i++) {
+                cout << "\033[1;33m[" << index + 1 << "]\033[0m " // Yellow index
+                    << "\033[1;37mName:\033[0m " << emp[i]->getName() << " | "
+                    << "\033[1;37mDepartment:\033[0m " << emp[i]->getDepartment() << " | "
+                    << "\033[1;37mType:\033[0m " << emp[i]->getEmployeeType() << "\n";
+                index++;
+            }
+
+            if (index == 0) {
+                cout << "\033[1;31mNo employees found!\033[0m\n"; // Red warning
+            } else {
+                cout << "\033[1;32mTotal Employees:\033[0m " << index << "\n\n"; // Green total
+            }
 
             break;
         }
-        // case 4
-            // نمایش کارمندان
 
-        case 5:
+
+        // افزودن مدیر جدید
+        case 5: {
+            string newUsername, newPassword, newName;
+            int newID;
+
+            cin.ignore();
+
+            cout << "Enter new manager's username: ";
+            getline(cin, newUsername);
+
+            cout << "Enter new manager's password: ";
+            getline(cin, newPassword);
+
+            cout << "Enter new manager's name: ";
+            getline(cin, newName);
+
+            cout << "Enter new manager's ID: ";
+            cin >> newID;
+
+        bool duplicate = false;
+        for (int i = 0; i < managerCount; i++) {
+            if (managers[i]->getusername() == newUsername) {
+                duplicate = true;
+                break;
+            }
+        }
+
+        if (duplicate) {
+            cout << "Username already exists!" << endl;
+        } else {
+            managers[managerCount] = new DepartmentManager();
+            managers[managerCount]->setter(newUsername, newPassword, newID, newName);
+            managerCount++;
+            cout << "\033[32m✔ Employee added successfully!\033[0m\n";
+        }
+
+
+            break;
+        }
+
+        case 6:
             delete loggedInUser;
             loggedInUser = NULL;
             break;
@@ -429,10 +545,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
 
  int main()
  {
-    
-    // ifstream fin("D:\\class\\unity\\c++2\\project\\text.txt");
-    // getline(fin , temp);
-    
+    cout << "\033[1;34mWelcome to the Employee Management System!\033[0m\n";
     
     DepartmentManager* managers[100] = {NULL};
     Employee *employers[100] = {NULL};
@@ -455,7 +568,6 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
             showMainMenu();
             int choice;
             cin >> choice;
-            cout << endl << endl << endl << endl;
 
             switch (choice) {
                 case 1:
@@ -464,12 +576,12 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[]) {
                 case 2:
                     return 0;
                 default:
-                    cout << "Invalid choice" << endl << endl << endl;
+                    cout << "Invalid choice" << endl;
             }
         } else {
             // منوی مدیر
             showAdminMenu(loggedInUser->getname());
-            handleAdminMenu(loggedInUser , employers);
+            handleAdminMenu(loggedInUser , employers , managers ,managerCount );
         }
     }
     
