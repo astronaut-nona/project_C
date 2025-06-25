@@ -98,6 +98,7 @@ private:
     ~FullTimeEmployee();
     
  };
+ FullTimeEmployee::~FullTimeEmployee() {}
 
 //======================//
 
@@ -142,6 +143,7 @@ private:
 
     
  };
+ PartTimeEmployee::~PartTimeEmployee() {}
 
 //======================//
 class ContractorEmployee : public Employee {
@@ -178,8 +180,10 @@ public:
         cout << "Enter new duration (months): ";
         cin >> contractDurationMonths;
     }
-};
 
+    ~ContractorEmployee();
+};
+ContractorEmployee::~ContractorEmployee() {}
 
 //======================//
 
@@ -214,7 +218,7 @@ public:
 
 DepartmentManager* loggedInUser = NULL;
 
-void showMainMenu() { // منوی اصلی
+void showMainMenu() {
     cout << "===== Employee Management System ===== " << endl;
     cout << "|1| Login" << endl;
     cout << "|2| Exit" << endl;
@@ -226,9 +230,19 @@ void showMainMenu() { // منوی اصلی
 void handleLogin(DepartmentManager* managers[], int managerCount) {
     string username, password;
     cout << "Enter username: ";
-    cin >> username;
+    cin.ignore(1000, '\n');
+    getline(cin, username);
+    while (username.empty()) {
+        cout << "Username cannot be empty. Please enter again: ";
+        getline(cin, username);
+    }
+
     cout << "Enter password: ";
-    cin >> password;
+    getline(cin, password);
+    while (password.empty()) {
+        cout << "Password cannot be empty. Please enter again: ";
+        getline(cin, password);
+    }
 
     for (int i = 0; i < managerCount; i++) {
         if (managers[i] != NULL && managers[i]->identify(username, password)) {
@@ -382,19 +396,23 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                 cin >> id;
 
                 bool found = false;
-
                 for (int i = 0; emp[i] != NULL; i++) {
-                    if (emp[i]->getName() == name && emp[i]->getID() == id) {
+                    if (
+                        emp[i]->getName() == name &&
+                        emp[i]->getID() == id &&
+                        emp[i]->getEmployeeType() == "Part-Time"
+                    ) {
                         cout << "Employee: " << emp[i]->getName() << endl;
-                        cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << endl;
+                        cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << " $" << endl;
                         found = true;
                         break;
                     }
                 }
 
                 if (!found) {
-                    cout << "\033[31m✘ Employee not found!\033[0m\n";
+                    cout << "Employee not found!" << endl;
                 }
+
 
             }else if (sure == 1)
             {
@@ -532,9 +550,9 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
         }
 
         case 6:
-            delete loggedInUser;
-            loggedInUser = NULL;
-            break;
+        loggedInUser = NULL; 
+        cout << "Logged out successfully!" << endl;
+        break;
 
         default:
             cout << endl << "Invalid choice!" << endl;
@@ -566,15 +584,22 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
     while (true) { // منو
         if (!loggedInUser) {
             showMainMenu();
-            int choice;
-            cin >> choice;
+    int choice;
+    cout << "Enter your choice: ";
+    while (!(cin >> choice) || (choice != 1 && choice != 2)) {
+        cout << "Invalid choice. Please enter 1 or 2: ";
+        cin.clear();
+        cin.ignore(1000, '\n');
+    }
 
             switch (choice) {
                 case 1:
-                    handleLogin(managers, managerCount);
+                handleLogin(managers, managerCount);
                 break;
+            
                 case 2:
-                    return 0;
+                exit(0);
+    
                 default:
                     cout << "Invalid choice" << endl;
             }
@@ -585,8 +610,9 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
         }
     }
     
-    
-    
-     
+    for (int i = 0; i < managerCount; i++) {
+        delete managers[i];
+    }
+
      return 0;
  }
