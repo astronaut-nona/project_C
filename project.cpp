@@ -1,5 +1,5 @@
  #include <iostream>
- #include <iomanip> 
+ #include <iomanip>
  #include "fstream"
 
 
@@ -483,16 +483,16 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
                 
                 
-                break;
             }
+            break;
         }
         // نمایش کارمندان
         case 4: {
             int index = 0;
-            cout << "\n\033[1;36m==== Employee List ====\033[0m\n"; // Cyan bold title
+            cout << "\n\033[1;36m==== Employee List ====\033[0m\n"; 
 
             for (int i = 0; emp[i] != NULL; i++) {
-                cout << "\033[1;33m[" << index + 1 << "]\033[0m " // Yellow index
+                cout << "\033[1;33m[" << index + 1 << "]\033[0m " 
                     << "\033[1;37mName:\033[0m " << emp[i]->getName() << " | "
                     << "\033[1;37mDepartment:\033[0m " << emp[i]->getDepartment() << " | "
                     << "\033[1;37mType:\033[0m " << emp[i]->getEmployeeType() << "\n";
@@ -500,9 +500,9 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             }
 
             if (index == 0) {
-                cout << "\033[1;31mNo employees found!\033[0m\n"; // Red warning
+                cout << "\033[1;31mNo employees found!\033[0m\n"; 
             } else {
-                cout << "\033[1;32mTotal Employees:\033[0m " << index << "\n\n"; // Green total
+                cout << "\033[1;32mTotal Employees:\033[0m " << index << "\n\n"; 
             }
 
             break;
@@ -559,6 +559,48 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
     }
 }
 
+void loadEmployeesFromFile(Employee* employers[], const char* filename) {
+    ifstream file("d:\\class\\unity\\c++2\\project\\text.txt");
+    if (!file.is_open()) {
+        cout << "Failed to open file: " << filename << endl;
+        return;
+    }
+
+    int index = 0;
+    string line;
+
+    while (getline(file, line) && index < 100) {
+
+        istringstream fin(line);
+        string empType, name, department;
+        int id;
+
+        fin >> empType >> name >> id;
+        fin >> department;
+
+        if (empType == "FullTime") {
+            double salary;
+            fin >> salary;
+            employers[index++] = new FullTimeEmployee(name, id, department, salary);
+        }
+        else if (empType == "PartTime") {
+            double rate;
+            int hours;
+            fin >> rate >> hours;
+            employers[index++] = new PartTimeEmployee(name, id, department, rate, hours);
+        }
+        else if (empType == "Contractor") {
+            double value;
+            int duration;
+            fin >> value >> duration;
+            employers[index++] = new ContractorEmployee(name, id, department, value, duration);
+        }
+    }
+
+    file.close();
+}
+
+
 
 
  int main()
@@ -569,6 +611,8 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
     Employee *employers[100] = {NULL};
 
     int managerCount = 0;
+
+    loadEmployeesFromFile(employers, "text.txt");
     
     managers[managerCount] = new DepartmentManager();
     managers[managerCount]->setter("AbbasAli" , "123456" , 987654 , "Ali");
