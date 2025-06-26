@@ -1,5 +1,5 @@
  #include <iostream>
- #include <iomanip> 
+ #include <iomanip>
  #include "fstream"
 
 
@@ -98,6 +98,7 @@ private:
     ~FullTimeEmployee();
     
  };
+ FullTimeEmployee::~FullTimeEmployee() {}
 
 //======================//
 
@@ -142,6 +143,7 @@ private:
 
     
  };
+ PartTimeEmployee::~PartTimeEmployee() {}
 
 //======================//
 class ContractorEmployee : public Employee {
@@ -178,8 +180,10 @@ public:
         cout << "Enter new duration (months): ";
         cin >> contractDurationMonths;
     }
-};
 
+    ~ContractorEmployee();
+};
+ContractorEmployee::~ContractorEmployee() {}
 
 //======================//
 
@@ -214,7 +218,7 @@ public:
 
 DepartmentManager* loggedInUser = NULL;
 
-void showMainMenu() { // منوی اصلی
+void showMainMenu() {
     cout << "===== Employee Management System ===== " << endl;
     cout << "|1| Login" << endl;
     cout << "|2| Exit" << endl;
@@ -226,9 +230,19 @@ void showMainMenu() { // منوی اصلی
 void handleLogin(DepartmentManager* managers[], int managerCount) {
     string username, password;
     cout << "Enter username: ";
-    cin >> username;
+    cin.ignore(1000, '\n');
+    getline(cin, username);
+    while (username.empty()) {
+        cout << "Username cannot be empty. Please enter again: ";
+        getline(cin, username);
+    }
+
     cout << "Enter password: ";
-    cin >> password;
+    getline(cin, password);
+    while (password.empty()) {
+        cout << "Password cannot be empty. Please enter again: ";
+        getline(cin, password);
+    }
 
     for (int i = 0; i < managerCount; i++) {
         if (managers[i] != NULL && managers[i]->identify(username, password)) {
@@ -382,19 +396,23 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                 cin >> id;
 
                 bool found = false;
-
                 for (int i = 0; emp[i] != NULL; i++) {
-                    if (emp[i]->getName() == name && emp[i]->getID() == id) {
+                    if (
+                        emp[i]->getName() == name &&
+                        emp[i]->getID() == id &&
+                        emp[i]->getEmployeeType() == "Part-Time"
+                    ) {
                         cout << "Employee: " << emp[i]->getName() << endl;
-                        cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << endl;
+                        cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << " $" << endl;
                         found = true;
                         break;
                     }
                 }
 
                 if (!found) {
-                    cout << "\033[31m✘ Employee not found!\033[0m\n";
+                    cout << "Employee not found!" << endl;
                 }
+
 
             }else if (sure == 1)
             {
@@ -465,16 +483,16 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
                 
                 
-                break;
             }
+            break;
         }
         // نمایش کارمندان
         case 4: {
             int index = 0;
-            cout << "\n\033[1;36m==== Employee List ====\033[0m\n"; // Cyan bold title
+            cout << "\n\033[1;36m==== Employee List ====\033[0m\n"; 
 
             for (int i = 0; emp[i] != NULL; i++) {
-                cout << "\033[1;33m[" << index + 1 << "]\033[0m " // Yellow index
+                cout << "\033[1;33m[" << index + 1 << "]\033[0m " 
                     << "\033[1;37mName:\033[0m " << emp[i]->getName() << " | "
                     << "\033[1;37mDepartment:\033[0m " << emp[i]->getDepartment() << " | "
                     << "\033[1;37mType:\033[0m " << emp[i]->getEmployeeType() << "\n";
@@ -482,9 +500,9 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             }
 
             if (index == 0) {
-                cout << "\033[1;31mNo employees found!\033[0m\n"; // Red warning
+                cout << "\033[1;31mNo employees found!\033[0m\n"; 
             } else {
-                cout << "\033[1;32mTotal Employees:\033[0m " << index << "\n\n"; // Green total
+                cout << "\033[1;32mTotal Employees:\033[0m " << index << "\n\n"; 
             }
 
             break;
@@ -532,14 +550,56 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
         }
 
         case 6:
-            delete loggedInUser;
-            loggedInUser = NULL;
-            break;
+        loggedInUser = NULL; 
+        cout << "Logged out successfully!" << endl;
+        break;
 
         default:
             cout << endl << "Invalid choice!" << endl;
     }
 }
+
+void loadEmployeesFromFile(Employee* employers[], const char* filename) {
+    ifstream file("d:\\class\\unity\\c++2\\project\\text.txt");
+    if (!file.is_open()) {
+        cout << "Failed to open file: " << filename << endl;
+        return;
+    }
+
+    int index = 0;
+    string line;
+
+    while (getline(file, line) && index < 100) {
+
+        istringstream fin(line);
+        string empType, name, department;
+        int id;
+
+        fin >> empType >> name >> id;
+        fin >> department;
+
+        if (empType == "FullTime") {
+            double salary;
+            fin >> salary;
+            employers[index++] = new FullTimeEmployee(name, id, department, salary);
+        }
+        else if (empType == "PartTime") {
+            double rate;
+            int hours;
+            fin >> rate >> hours;
+            employers[index++] = new PartTimeEmployee(name, id, department, rate, hours);
+        }
+        else if (empType == "Contractor") {
+            double value;
+            int duration;
+            fin >> value >> duration;
+            employers[index++] = new ContractorEmployee(name, id, department, value, duration);
+        }
+    }
+
+    file.close();
+}
+
 
 
 
@@ -551,6 +611,8 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
     Employee *employers[100] = {NULL};
 
     int managerCount = 0;
+
+    loadEmployeesFromFile(employers, "text.txt");
     
     managers[managerCount] = new DepartmentManager();
     managers[managerCount]->setter("AbbasAli" , "123456" , 987654 , "Ali");
@@ -566,15 +628,22 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
     while (true) { // منو
         if (!loggedInUser) {
             showMainMenu();
-            int choice;
-            cin >> choice;
+    int choice;
+    cout << "Enter your choice: ";
+    while (!(cin >> choice) || (choice != 1 && choice != 2)) {
+        cout << "Invalid choice. Please enter 1 or 2: ";
+        cin.clear();
+        cin.ignore(1000, '\n');
+    }
 
             switch (choice) {
                 case 1:
-                    handleLogin(managers, managerCount);
+                handleLogin(managers, managerCount);
                 break;
+            
                 case 2:
-                    return 0;
+                exit(0);
+    
                 default:
                     cout << "Invalid choice" << endl;
             }
@@ -585,8 +654,9 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
         }
     }
     
-    
-    
-     
+    for (int i = 0; i < managerCount; i++) {
+        delete managers[i];
+    }
+
      return 0;
  }

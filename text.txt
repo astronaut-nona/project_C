@@ -1,0 +1,3 @@
+FullTime Ali 101 5000
+PartTime Ali 102 15 120
+Contractor Ali 103 24000 12
