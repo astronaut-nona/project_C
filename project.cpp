@@ -297,6 +297,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
             string name, department;
             int id;
+            bool duplicateID;
 
             cout << "Enter name: ";
             cin.ignore(); 
@@ -306,11 +307,25 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             getline(cin, department);
 
             cout << "Enter ID: ";
-            while (!(cin >> id)) {
-                cout << "Invalid ID. Please enter a number: ";
-                cin.clear();
-                cin.ignore(1000, '\n');
-            }
+
+            do {
+                duplicateID = false;
+                cout << "Enter ID: ";
+                while (!(cin >> id)) {
+                    cout << "Invalid ID. Please enter a number: ";
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                }
+
+                for (int j = 0; j < 100 && emp[j] != NULL; j++) {
+                    if (emp[j]->getID() == id) {
+                        cout << "\033[1;31m✘ This ID is already in use! Please enter a different ID.\033[0m\n";
+                        duplicateID = true;
+                        break;
+                    }
+                }
+
+            } while (duplicateID);
 
             for (int i = 0; i < 100; i++) {
                 if (emp[i] == NULL) {
@@ -376,7 +391,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             string name, department;
             int id;
 
-            cin.ignore(); 
+            cin.ignore();
             cout << "Enter name: ";
             getline(cin, name);
 
@@ -398,7 +413,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                     emp[i]->getDepartment() == department &&
                     emp[i]->getID() == id
                 ) {
-                    cout << "\n\nI Found your employee!!\n";
+                    cout << "\n\033[32m✔ Employee found. You can now edit the details.\033[0m\n";
                     emp[i]->editDetails(); 
                     found = true;
                     break;
@@ -411,6 +426,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
             break;
         }
+
 
         // منوی حساب کارمند
         case 3:{
@@ -579,12 +595,30 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             cout << "Enter new manager's name: ";
             getline(cin, newName);
 
+        do {
             cout << "Enter new manager's ID: ";
             while (!(cin >> newID)) {
                 cout << "Invalid ID. Please enter a number: ";
                 cin.clear();
                 cin.ignore(1000, '\n');
             }
+
+            bool duplicate = false;
+            for (int j = 0; j < managerCount; j++) {
+                if (managers[j]->getUserID() == newID) {
+                    duplicate = true;
+                    break;
+                }
+            }
+
+            if (duplicate) {
+                cout << "\033[31m✘ This ID is already in use. Please choose another.\033[0m\n";
+            } else {
+                break;
+            }
+
+        } while (true);
+
 
 
         bool duplicate = false;
