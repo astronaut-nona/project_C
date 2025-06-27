@@ -1,3 +1,5 @@
+ // یوسف ملک محمد 4036013107
+ // محمد حسین محبت 4036013097
  #include <iostream>
  #include <iomanip>
  #include "fstream"
@@ -98,7 +100,7 @@ private:
 
 
     string getEmployeeType() override {
-        return "Full-Time";
+        return "FullTime";
     }
 
 
@@ -157,7 +159,7 @@ private:
 
 
     string getEmployeeType() override {
-        return "Part-Time";
+        return "PartTime";
     }
 
 
@@ -333,7 +335,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             }
             if (isFull) {
                 cout << "\033[31m✘ Employee list is full! Cannot add more employees.\033[0m\n";
-                return;
+                break;
             }
 
 
@@ -366,7 +368,6 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                 getline(cin, department);
             }
 
-            cout << "Enter ID: ";
 
             do {
                 duplicateID = false;
@@ -492,8 +493,10 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                     emp[i]->getDepartment() == department &&
                     emp[i]->getID() == id
                 ) {
-                    cout << "\n\033[32m✔ Employee found. You can now edit the details.\033[0m\n";
+                    cout << "\n\033[32m✔ Employee found:\033[0m\n";
+                    emp[i]->displayDetails(); 
                     emp[i]->editDetails(); 
+
                     found = true;
                     break;
                 }
@@ -546,11 +549,23 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
 
                 bool found = false;
+                int typeChoice;
+                cout << "Select employee type:\n[1] FullTime\n[2] PartTime\n[3] Contractor\n";
+                while (!(cin >> typeChoice) || typeChoice < 1 || typeChoice > 3) {
+                    cout << "Invalid choice. Enter 1, 2, or 3: ";
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                }
+
+                if (typeChoice == 1) type = "FullTime";
+                else if (typeChoice == 2) type = "PartTime";
+                else type = "Contractor";
+
                 for (int i = 0; emp[i] != NULL; i++) {
                     if (
                         emp[i]->getName() == name &&
                         emp[i]->getID() == id &&
-                        emp[i]->getEmployeeType() == "Part-Time"
+                        emp[i]->getEmployeeType() == type
                     ) {
                         cout << "Employee: " << emp[i]->getName() << endl;
                         cout << "Monthly Salary: " << emp[i]->calculateMonthlySalary() << " $" << endl;
@@ -561,7 +576,9 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
                 if (!found) {
                     cout << "Employee not found!" << endl;
+                    break;
                 }
+
 
 
             }else if (sure == 1)
@@ -583,7 +600,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                 if (empType == 1) {
                     cout << "----- Full-Time Employees -----" << endl;
                 for (int i = 0; emp[i] != NULL; i++) {
-                    if (emp[i]->getEmployeeType() == "Full-Time") {
+                    if (emp[i]->getEmployeeType() == "FullTime") {
                         cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
                         filteredIndexes[filteredCount] = i; 
                         filteredCount++;
@@ -598,17 +615,17 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             else if (empType == 2) {
                 cout << "----- Part-Time Employees -----" << endl;
                 for (int i = 0; emp[i] != NULL; i++) {
-                    if (emp[i]->getEmployeeType() == "Part-Time") {
+                    if (emp[i]->getEmployeeType() == "PartTime") {
                         cout << "[" << filteredCount + 1 << "] " << emp[i]->getName() << endl;
                         filteredIndexes[filteredCount] = i;
                         filteredCount++;
                     }
-
-                    if (filteredCount == 0) {
-                        cout << "No employees found." << endl;
-                        break;
-                    }
-                }}
+                }
+                if (filteredCount == 0) {
+                    cout << "No employees found." << endl;
+                    break;
+                }
+            }
                 else if (empType == 3) {
                     cout << "----- Contractor Employees -----" << endl;
                     for (int i = 0; emp[i] != NULL; i++) {
