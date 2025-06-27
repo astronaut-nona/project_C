@@ -302,9 +302,18 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             cout << "Enter name: ";
             cin.ignore(); 
             getline(cin, name);
+            while (name.empty()) {
+                cout << "Name cannot be empty. Enter again: ";
+                getline(cin, name);
+            }
 
+            
             cout << "Enter department: ";
             getline(cin, department);
+            while (department.empty()) {
+                cout << "Department cannot be empty. Enter again: ";
+                getline(cin, department);
+            }
 
             cout << "Enter ID: ";
 
@@ -332,11 +341,12 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                     if (empType == 1) {
                         double salary;
                         cout << "Enter monthly salary: ";
-                        while (!(cin >> salary)) {
-                            cout << "Invalid input. Please enter a number: ";
+                        while (!(cin >> salary) || salary <= 0) {
+                            cout << "Invalid salary. Enter a positive number: ";
                             cin.clear();
                             cin.ignore(1000, '\n');
                         }
+
 
                         emp[i] = new FullTimeEmployee(name, id, department, salary);
                     }
@@ -344,18 +354,20 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                         double rate;
                         int hours;
                         cout << "Enter hourly rate: ";
-                        while (!(cin >> rate)) {
-                            cout << "Invalid input. Please enter a number: ";
+                        while (!(cin >> rate) || rate <= 0) {
+                            cout << "Invalid rate. Enter a positive number: ";
                             cin.clear();
                             cin.ignore(1000, '\n');
                         }
 
+
                         cout << "Enter hours worked: ";
-                        while (!(cin >> hours)) {
-                            cout << "Invalid input. Please enter a number: ";
+                        while (!(cin >> hours) || hours <= 0) {
+                            cout << "Invalid hours. Enter a positive number: ";
                             cin.clear();
                             cin.ignore(1000, '\n');
                         }
+
 
                         emp[i] = new PartTimeEmployee(name, id, department, rate, hours);
                     }
@@ -392,17 +404,34 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             int id;
 
             cin.ignore();
+
             cout << "Enter name: ";
             getline(cin, name);
+            while (name.empty()) {
+                cout << "Name cannot be empty. Please enter again: ";
+                getline(cin, name);
+            }
 
             cout << "Enter department: ";
             getline(cin, department);
+            while (department.empty()) {
+                cout << "Department cannot be empty. Please enter again: ";
+                getline(cin, department);
+            }
 
             cout << "Enter ID: ";
             while (!(cin >> id)) {
                 cout << "Invalid ID. Please enter a number: ";
                 cin.clear();
                 cin.ignore(1000, '\n');
+            }
+            while (id <= 0) {
+                cout << "ID must be a positive number: ";
+                while (!(cin >> id)) {
+                    cout << "Invalid ID. Please enter a number: ";
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                }
             }
 
             bool found = false;
@@ -428,6 +457,7 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
         }
 
 
+
         // منوی حساب کارمند
         case 3:{
             int sure=0,empType;
@@ -446,6 +476,10 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                 cin.ignore();
                 cout << "Enter employee name: ";
                 getline(cin, name);
+                while (name.empty()) {
+                cout << "Name cannot be empty. Enter again: ";
+                getline(cin, name);
+                }
 
                 cout << "Enter employee ID: ";
                 while (!(cin >> id)) {
@@ -588,20 +622,32 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
             cout << "Enter new manager's username: ";
             getline(cin, newUsername);
+            while (newUsername.empty()) {
+            cout << "Username cannot be empty. Enter again: ";
+            getline(cin, newUsername);
+            }
 
             cout << "Enter new manager's password: ";
             getline(cin, newPassword);
+            while (newPassword.empty()) {
+                cout << "newUsername cannot be empty. Enter again: ";
+                getline(cin, newUsername);
+            }
 
             cout << "Enter new manager's name: ";
             getline(cin, newName);
+            while (newName.empty()) {
+                cout << "newName cannot be empty. Enter again: ";
+                getline(cin, newUsername);
+            }
 
         do {
-            cout << "Enter new manager's ID: ";
-            while (!(cin >> newID)) {
-                cout << "Invalid ID. Please enter a number: ";
-                cin.clear();
-                cin.ignore(1000, '\n');
-            }
+                cout << "Enter new manager's ID: ";
+                while (!(cin >> newID) || newID <= 0) {
+                    cout << "Invalid ID. Enter a positive number: ";
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                }
 
             bool duplicate = false;
             for (int j = 0; j < managerCount; j++) {
@@ -613,11 +659,9 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
 
             if (duplicate) {
                 cout << "\033[31m✘ This ID is already in use. Please choose another.\033[0m\n";
-            } else {
-                break;
             }
 
-        } while (true);
+        } while (duplicate);
 
 
 
