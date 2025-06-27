@@ -324,6 +324,19 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
         // افزودن کارمند جدید
         case 1: {
 
+            bool isFull = true;
+            for (int i = 0; i < 100; i++) {
+                if (emp[i] == NULL) {
+                    isFull = false;
+                    break;
+                }
+            }
+            if (isFull) {
+                cout << "\033[31m✘ Employee list is full! Cannot add more employees.\033[0m\n";
+                return;
+            }
+
+
             int empType;
             cout << "Select employee type: \n";
             cout << "[1] Full-Time\n[2] Part-Time\n[3] Contractor\n";
@@ -371,8 +384,9 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                         break;
                     }
                 }
-
+                
             } while (duplicateID);
+            bool added = false;
 
             for (int i = 0; i < 100; i++) {
                 if (emp[i] == NULL) {
@@ -384,8 +398,6 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                             cin.clear();
                             cin.ignore(1000, '\n');
                         }
-
-
                         emp[i] = new FullTimeEmployee(name, id, department, salary);
                     }
                     else if (empType == 2) {
@@ -397,41 +409,41 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
                             cin.clear();
                             cin.ignore(1000, '\n');
                         }
-
-
                         cout << "Enter hours worked: ";
                         while (!(cin >> hours) || hours <= 0) {
                             cout << "Invalid hours. Enter a positive number: ";
                             cin.clear();
                             cin.ignore(1000, '\n');
                         }
-
-
                         emp[i] = new PartTimeEmployee(name, id, department, rate, hours);
                     }
                     else if (empType == 3) {
                         double value;
                         int months;
                         cout << "Enter contract value: ";
-                        while (!(cin >> value)) {
-                            cout << "Invalid input. Please enter a number: ";
+                        while (!(cin >> value) || value <= 0) {
+                            cout << "Invalid input. Enter a positive number: ";
                             cin.clear();
                             cin.ignore(1000, '\n');
                         }
-                        
                         cout << "Enter contract duration (months): ";
-                        while (!(cin >> months)) {
-                            cout << "Invalid input. Please enter a number: ";
+                        while (!(cin >> months) || months <= 0) {
+                            cout << "Invalid input. Enter a positive number: ";
                             cin.clear();
                             cin.ignore(1000, '\n');
                         }
-
                         emp[i] = new ContractorEmployee(name, id, department, value, months);
                     }
+
+                    added = true;
                     cout << "\033[32m✔ Employee added successfully!\033[0m\n";
                     break;
                 }
             }
+            if (!added) {
+                cout << "\033[31m✘ Employee list is full! Cannot add more employees.\033[0m\n";
+            }
+
 
             break;
         }
@@ -662,6 +674,12 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
             string newUsername, newPassword, newName;
             int newID;
 
+            if (managerCount >= 100) {
+                cout << "\033[31m✘ Cannot add more managers. Maximum capacity reached!\033[0m\n";
+                return;
+            }
+
+
             cin.ignore();
 
             cout << "Enter new manager's username: ";
@@ -720,10 +738,14 @@ void handleAdminMenu(DepartmentManager* managerLog , Employee* emp[] , Departmen
         if (duplicate) {
             cout << "Username already exists!" << endl;
         } else {
-            managers[managerCount] = new DepartmentManager();
-            managers[managerCount]->setter(newUsername, newPassword, newID, newName);
-            managerCount++;
-            cout << "\033[32m✔ Employee added successfully!\033[0m\n";
+            if (managerCount >= 100) {
+                cout << "\033[31m✘ Cannot add more managers. Maximum capacity reached!\033[0m\n";
+            } else {
+                managers[managerCount] = new DepartmentManager();
+                managers[managerCount]->setter(newUsername, newPassword, newID, newName);
+                managerCount++;
+                cout << "\033[32m✔ Manager added successfully!\033[0m\n";
+            }
         }
 
 
